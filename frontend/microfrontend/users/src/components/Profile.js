@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import api from "../utils/api";
 import '../blocks/profile/profile.css';
 import { CurrentUserContext } from 'user_context';
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 
 function Profile() {
     const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
@@ -18,11 +20,40 @@ function Profile() {
             .catch((err) => console.log(err));
     }, []);
     function onEditAvatar() {
-
+        setIsEditAvatarPopupOpen(true);
     }
     function onEditProfile() {
-
+        setIsEditProfilePopupOpen(true);
     }
+   
+    function handleEditProfileSubmit(userUpdate) {
+        api
+        .setUserInfo(userUpdate)
+        .then((newUserData) => {
+          setCurrentUser(newUserData);
+          setIsEditProfilePopupOpen(false);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    function handleEditAvatarSubmit(avatarUpdate) {
+        api
+        .setUserAvatar(avatarUpdate)
+        .then((newUserData) => {
+          setCurrentUser(newUserData);
+          setIsEditAvatarPopupOpen(false);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    function closeEditProfilePopup() {
+        setIsEditProfilePopupOpen(false);
+    }
+
+    function closeEditAvatarPopup() {
+        setIsEditAvatarPopupOpen(false);
+    }
+
     const imageStyle = { backgroundImage: `url(${currentUser?.avatar})` };
     return (
         <>
@@ -32,6 +63,8 @@ function Profile() {
                 <button className="profile__edit-button" type="button" onClick={onEditProfile}></button>
                 <p className="profile__description">{currentUser?.about}</p>
             </div>
+            <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeEditProfilePopup} onUpdateUser={handleEditProfileSubmit}></EditProfilePopup>
+            <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeEditAvatarPopup} onUpdateAvatar={handleEditAvatarSubmit}></EditAvatarPopup>
         </>
     );
 }

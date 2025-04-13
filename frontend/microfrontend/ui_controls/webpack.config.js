@@ -1,15 +1,11 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const path = require('path');
-const Dotenv = require('dotenv-webpack');
 
 const deps = require("./package.json").dependencies;
-
-const printCompilationMessage = require('./compilation.config.js');
-
-module.exports = (_, argv) => ({
+module.exports = {
   output: {
-    publicPath: "http://localhost:3002/",
+    publicPath: "http://localhost:3004/",
   },
 
   resolve: {
@@ -20,24 +16,7 @@ module.exports = (_, argv) => ({
   },
 
   devServer: {
-    port: 3002,
-    historyApiFallback: true,
-    watchFiles: [path.resolve(__dirname, 'src')],
-    onListening: function (devServer) {
-      const port = devServer.server.address().port
-
-      printCompilationMessage('compiling', port)
-
-      devServer.compiler.hooks.done.tap('OutputMessagePlugin', (stats) => {
-        setImmediate(() => {
-          if (stats.hasErrors()) {
-            printCompilationMessage('failure', port)
-          } else {
-            printCompilationMessage('success', port)
-          }
-        })
-      })
-    }
+    port: 3004,
   },
 
   module: {
@@ -60,19 +39,27 @@ module.exports = (_, argv) => ({
           loader: "babel-loader",
         },
       },
+      {
+        test: /\.svg$/,
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 8 * 1024, // Преобразование в base64 для маленьких файлов
+          },
+        },
+      },
     ],
   },
 
   plugins: [
     new ModuleFederationPlugin({
-      name: "cards",
+      name: "ui_controls",
       filename: "remoteEntry.js",
-      remotes: {
-        'ui_controls': 'ui_controls@http://localhost:3004/remoteEntry.js',
-      },
+      remotes: {},
       exposes: {
-        './CardsList': './src/components/CardsList.js',
-        './AddCardButton': './src/components/AddCardButton.js',
+        './PopupWithForm': './src/components/PopupWithForm.js',
+        './ImagePopup': './src/components/ImagePopup.js',
+        './InfoTooltip': './src/components/InfoTooltip.js',
       },
       shared: {
         ...deps,
@@ -84,9 +71,9 @@ module.exports = (_, argv) => ({
           singleton: true,
           requiredVersion: deps["react-dom"],
         },
-        "react-router-dom": { 
+        "react-router-dom": {
           singleton: true,
-          requiredVersion: deps["react-router-dom"],
+          requiredVersion: false,
         },
         'user_context': {
           import: 'user_context',
@@ -97,6 +84,5 @@ module.exports = (_, argv) => ({
     new HtmlWebPackPlugin({
       template: "./src/index.html",
     }),
-    new Dotenv()
   ],
-});
+};

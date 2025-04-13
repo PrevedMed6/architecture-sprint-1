@@ -1,5 +1,5 @@
 export const generateJWTEvent = (isLoggedIn, email) => {
-    dispatchEvent(new CustomEvent("jwt-change", {
+    dispatchEvent(new CustomEvent("jwt_change", {
       detail: {
         isLoggedIn: isLoggedIn,
         email: email

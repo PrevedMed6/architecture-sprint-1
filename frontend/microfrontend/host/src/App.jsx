@@ -1,10 +1,9 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Main from "./components/Main";
-import InfoTooltip from "./components/InfoTooltip";
 import JWTCheck from "auth/JWTCheck";
 import { CurrentUserContextProvider } from 'user_context';
 import "./index.css";
@@ -16,6 +15,11 @@ const Register = lazy(() => import('auth/Register').catch(() => {
 );
 
 const Login = lazy(() => import('auth/Login').catch(() => {
+  return { default: () => <div className='error'>Component is not available!</div> };
+})
+);
+
+const InfoTooltip = lazy(() => import('ui_controls/InfoTooltip').catch(() => {
   return { default: () => <div className='error'>Component is not available!</div> };
 })
 );
@@ -32,8 +36,12 @@ const App = function () {
   const handleJwtChange = event => {
     setJwtChecked(true);
     setIsLoggedIn(event.detail.isLoggedIn);
-    setEmail(event.detail.email);
-    navigate('/');
+    if (event.detail.isLoggedIn) {
+      setEmail(event.detail.email);
+      navigate('/');
+    } else {
+      navigate('/signin');
+    }
   }
 
   const handleUserRegistred = event => {
@@ -48,11 +56,19 @@ const App = function () {
   }
 
   useEffect(() => {
-    addEventListener("jwt-change", handleJwtChange);
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      setJwtChecked(true);
+      navigate("/signin");
+    }
+  }, [])
+
+  useEffect(() => {
+    addEventListener("jwt_change", handleJwtChange);
     addEventListener("user_registred", handleUserRegistred);
     addEventListener("auth_error", handleAuthError);
     return () => {
-      removeEventListener("jwt-change", handleJwtChange);
+      removeEventListener("jwt_change", handleJwtChange);
       removeEventListener("user_registred", handleUserRegistred);
       removeEventListener("auth_error", handleAuthError);
     }
@@ -61,33 +77,46 @@ const App = function () {
   function closeTooltipPopup() {
     setIsInfoToolTipOpen(false);
   }
-
   return (
     <div className="page__content">
-      jwtChecked ?
-      (
-      <Header email={email} />
-      <Routes>
-        <Route exact path="/" element={
-          isLoggedIn ? (
-            <Main />
-          ) : (
-            <Navigate to="/signin" />
-          )}>
-        </Route>
-        <Route path="/signin" element={<Login />} />
-        <Route path="/signup" element={<Register />} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-      <Footer />
+      {!jwtChecked ? (
+        <JWTCheck />
+      ) : (<>
+        <Header email={email} />
+        <Routes>
+          <Route
+            exact
+            path="/"
+            element={
+              isLoggedIn ? <Main /> : <Navigate to="/signin" replace />
+            }
+          />
+          <Route
+            path="/signin"
+            element={
+              isLoggedIn ? <Navigate to="/" replace /> : <Login />
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              isLoggedIn ? <Navigate to="/" replace /> : <Register />
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <Footer />
+      </>
+      )}
       <InfoTooltip
         isOpen={isInfoToolTipOpen}
         onClose={closeTooltipPopup}
         status={tooltipStatus}
       />
-      ):(<JWTCheck />)
-    </div >
+
+    </div>
   );
+
 }
 
 const rootElement = document.getElementById("app")

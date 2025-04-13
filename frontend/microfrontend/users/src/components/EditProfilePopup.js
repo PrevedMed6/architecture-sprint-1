@@ -1,6 +1,10 @@
-import React from 'react';
-import PopupWithForm from './PopupWithForm';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import React, { lazy } from 'react';
+import { CurrentUserContext } from 'user_context';
+
+const PopupWithForm = lazy(() => import('ui_controls/PopupWithForm').catch(() => {
+  return { default: () => <div className='error'>Component is not available!</div> };
+})
+);
 
 function EditProfilePopup({ isOpen, onUpdateUser, onClose }) {
   const [name, setName] = React.useState('');

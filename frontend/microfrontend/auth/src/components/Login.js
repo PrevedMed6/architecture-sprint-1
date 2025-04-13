@@ -26,7 +26,6 @@ function Login() {
         events.generateErrorEvent(err);
       });
   }
-
   return (
     <div className="auth-form">
       <form className="auth-form__form" onSubmit={handleSubmit}>

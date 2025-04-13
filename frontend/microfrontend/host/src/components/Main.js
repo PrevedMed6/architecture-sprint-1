@@ -5,21 +5,26 @@ const Profile = lazy(() => import('users/Profile').catch(() => {
 })
 );
 const CardsList = lazy(() => import('cards/CardsList').catch(() => {
-  return { default: () => <div className='error'>Component is not available!</div> };
+  return { default: () => <div>Component is not available!</div> };
 })
 );
 
-function Main({ onAddPlace }) {
+const AddCardButton = lazy(() => import('cards/AddCardButton').catch(() => {
+  return { default: () => <div >Component is not available!</div> };
+})
+);
+
+function Main() {
   return (
     <main className="content">
       <section className="profile page__section">
-        <React.Suspense fallback={<div>Loading...</div>}>
+        <React.Suspense >
           <Profile />
         </React.Suspense>
-        <button className="profile__add-button" type="button" onClick={onAddPlace}></button>
+        <AddCardButton cssClass="profile__add-button" />
       </section>
       <section className="places page__section">
-        <React.Suspense fallback={<div>Loading...</div>}>
+        <React.Suspense>
           <CardsList />
         </React.Suspense>
       </section>

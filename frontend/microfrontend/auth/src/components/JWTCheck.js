@@ -13,7 +13,7 @@ function JWTCheck() {
             })
             .catch((err) => {
               localStorage.removeItem("jwt");
-              events.generateErrorEvent(err);
+              events.generateJWTEvent(false, '');
             });
         }
       }, []);

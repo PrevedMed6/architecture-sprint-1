@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import * as auth from "../utils/auth.js";
 import * as events from "../utils/events.js";
+import '../blocks/auth-form/auth-form.css';
 
 function Register() {
   const [email, setEmail] = React.useState('');

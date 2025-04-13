@@ -1,29 +1,26 @@
 import React from 'react';
+import { CurrentUserContext } from 'user_context';
+import '../blocks/card/card.css';
 
-function Card({ card }) {
+function Card({ card, onCardLike, onCardDelete, onCardClick }) {
+  const {currentUser} = React.useContext(CurrentUserContext);
   const cardStyle = { backgroundImage: `url(${card.link})` };
 
   function handleClick() {
-    alert('УРУРУ!');
-    //onCardClick(card);
+    onCardClick(card);
   }
 
   function handleLikeClick() {
-    alert('УРУРУ!');
-    //onCardLike(card);
+    onCardLike(card);
   }
 
   function handleDeleteClick() {
-    alert('УРУРУ!');
-    //onCardDelete(card);
+    onCardDelete(card);
   }
 
- // const currentUser = React.useContext(CurrentUserContext);
-
-  const isLiked = false//card.likes.some(i => i._id === currentUser._id);
+  const isLiked = card.likes.some(i => i._id === currentUser?._id);
   const cardLikeButtonClassName = `card__like-button ${isLiked && 'card__like-button_is-active'}`;
-
-  const isOwn = true;
+  const isOwn = card.owner._id === currentUser?._id;
   const cardDeleteButtonClassName = (
     `card__delete-button ${isOwn ? 'card__delete-button_visible' : 'card__delete-button_hidden'}`
   );
