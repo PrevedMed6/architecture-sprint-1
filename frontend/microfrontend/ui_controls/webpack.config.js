@@ -10,9 +10,6 @@ module.exports = {
 
   resolve: {
     extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
-    alias: {
-      'user_context': path.resolve('../user_context'),
-    },
   },
 
   devServer: {
@@ -74,10 +71,6 @@ module.exports = {
         "react-router-dom": {
           singleton: true,
           requiredVersion: false,
-        },
-        'user_context': {
-          import: 'user_context',
-          requiredVersion: require('../user_context/package.json').version,
         },
       },
     }),

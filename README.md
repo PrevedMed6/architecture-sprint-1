@@ -37,11 +37,11 @@ git clone git@github.com:PrevedMed6/architecture-sprint-1.git
 ```
 2. Перейдите в папку репозитория
 ```bash
-cd .\architecture-sprint-1\
+cd .\architecture-sprint-1\frontend\microfrontend\
 ```
 3. Запустите docker-compose
 ```bash
-docker-compose up
+docker-compose up --build
 ```
 ### Описание текущей реализации
 Текущая реализация приложения Mesto может быть описана следующей диаграммой:

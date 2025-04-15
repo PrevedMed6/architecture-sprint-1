@@ -1,7 +1,7 @@
 FROM node:18-slim
 
 WORKDIR /app
-COPY . .
+COPY auth/ .                       
 
 RUN npm install
 RUN npm run build

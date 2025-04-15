@@ -15,7 +15,7 @@ module.exports = (_, argv) => ({
   resolve: {
     extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
     alias: {
-      'user_context': path.resolve('../user_context'),
+      'user_context': path.resolve('./user_context'),
     },
   },
 
@@ -90,7 +90,7 @@ module.exports = (_, argv) => ({
         },
         'user_context': {
           import: 'user_context',
-          requiredVersion: require('../user_context/package.json').version,
+          requiredVersion: require('./user_context/package.json').version,
         },
       },
     }),
