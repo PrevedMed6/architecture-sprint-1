@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  host:
+    build:
+      context: .
+      dockerfile: host/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - ui_controls
+      - auth
+      - cards
+      - users
+  users:
+    build:
+      context: .
+      dockerfile: users/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - ui_controls
+  cards:
+    build:
+      context: .
+      dockerfile: cards/Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - ui_controls
+  auth:
+    build:
+      context: .
+      dockerfile: auth/Dockerfile
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - ui_controls
+  ui_controls:
+    build:
+      context: .
+      dockerfile: ui_controls/Dockerfile
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=development
+  
